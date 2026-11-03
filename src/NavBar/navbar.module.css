@@ -1,0 +1,34 @@
+/* navbar.module.css */
+
+.navbar {
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  min-height: 70px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  padding: 0;
+}
+
+.logo {
+  height: 42px;
+  width: auto;
+  object-fit: contain;
+  transition: transform 0.2s ease;
+}
+
+.logo:hover {
+  transform: scale(1.02);
+}
+
+.navLink {
+  font-weight: 500;
+  transition: color 0.2s ease, background-color 0.2s ease;
+  padding: 0.5rem 1rem !important;
+  border-radius: 6px;
+}
+
+.navLink:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
