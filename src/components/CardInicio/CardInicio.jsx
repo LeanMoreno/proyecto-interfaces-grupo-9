@@ -23,8 +23,7 @@ function CardInicio() {
               to='/productos' 
               variant="danger" 
               size="lg"
-              className="px-4 py-2 fw-bold shadow-sm"
-            >
+              className="px-4 py-2 fw-bold shadow-sm">
               Ver Catálogo de Productos
             </Button>
           </div>
