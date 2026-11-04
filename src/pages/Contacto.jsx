@@ -1,29 +1,56 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Form, Button, Card } from 'react-bootstrap';
+import styles from './contacto.module.css'
 
 function Contacto() {
   const [enviado, setEnviado] = useState(false);
   const [formData, setFormData] = useState({
     nombre: '',
-    email: '',
+    email: '',    
     mensaje: ''
   });
 
-  const handleChange = (e) => {
+  const [errors, setErrors] = useState({});
+
+  function handleChange(e) {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: value,
     });
-  };
+  }
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!formData.nombre || !formData.email || !formData.mensaje) {
-      alert("Por favor, completá todos los campos.");
-      return;
+  function validateForm() {
+    const newErrors = {};
+    
+    if (formData.nombre.trim() === "") {
+      newErrors.nombre = "El campo nombre está vacío";
     }
-    setEnviado(true);
-  };
+    if (formData.email.trim() === "") {
+      newErrors.email = "El campo email está vacío";
+    } else if (!formData.email.includes("@")) {
+      newErrors.email = "Ingrese un email válido";
+    } else if (formData.email.includes(" ")) {
+      newErrors.email = "El email no puede tener espacios vacios";
+    }
+    
+    if (formData.mensaje.trim() === "") {
+      newErrors.mensaje = "No escribiste ningun mensaje";
+    }    
+    return newErrors;
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const newErrors = validateForm();
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length === 0) {
+      setEnviado(true);
+    } else {
+      setEnviado(false);
+    }
+  }
+
 
   return (
     <Container className="my-5" style={{ minHeight: "70vh" }}>
@@ -46,16 +73,22 @@ function Contacto() {
                 </Button>
               </div>
             ) : (
-              <Form onSubmit={handleSubmit}>
+              <Form onSubmit={handleSubmit} noValidate>
                 <Form.Group className="mb-3" controlId="contactoNombre">
                   <p className="fw-semibold">Tus Datos</p>
                   <Form.Control 
                     type="text" 
                     name="nombre"
-                    placeholder="Nombre" 
+                    placeholder="Nombre"
+                    className={`form-control ${
+                      errors.nombre ? "is-invalid" : ""
+                    }`} 
                     value={formData.nombre}
                     onChange={handleChange}
                   />
+                  {errors.nombre && (
+                    <div className="invalid-feedback">{errors.nombre}</div>
+                  )}
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="contactoEmail">
@@ -64,8 +97,14 @@ function Contacto() {
                     name="email"
                     placeholder="Correo Electronico" 
                     value={formData.email}
+                    className={`form-control ${
+                      errors.email ? "is-invalid" : ""
+                    }`}
                     onChange={handleChange}
                   />
+                  {errors.email && (
+                    <div className="invalid-feedback">{errors.email}</div>
+                  )}
                 </Form.Group>
 
                 <Form.Group className="mb-4" controlId="contactoMensaje">
@@ -74,9 +113,15 @@ function Contacto() {
                     rows={4} 
                     name="mensaje"
                     placeholder="Contanos tu consulta..." 
+                    className={`form-control ${
+                      errors.mensaje ? "is-invalid" : ""
+                    }`}
                     value={formData.mensaje}
                     onChange={handleChange}
                   />
+                  {errors.mensaje && (
+                    <div className="invalid-feedback">{errors.mensaje}</div>
+                  )}
                 </Form.Group>
 
                 <Button variant="danger" type="submit" size="lg" className="w-100 fw-bold shadow-sm">
@@ -88,8 +133,8 @@ function Contacto() {
         </Col>
 
         {/* Información de Contacto / Redes */}
-        <Col lg={4}>
-          <div className="d-flex flex-column gap-4">
+        <Col lg={4} className={styles.contenedor}>
+          <div className="d-flex flex-column gap-4" >
             <Card className="shadow-sm border-0 p-4 bg-light">
               <h5 className="fw-bold mb-3">Información</h5>
               <p className="text-muted small mb-2 d-flex align-items-center gap-2">

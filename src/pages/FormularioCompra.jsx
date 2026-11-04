@@ -4,13 +4,49 @@ import { useNavigate } from "react-router-dom";
 
 function FormularioCompra({ carrito, eliminarProducto, vaciarCarrito }) {
     const [mostrarModal, setMostrarModal] = useState(false);
+
     const navigate = useNavigate();
+    const [formData, setFormData] = useState({
+        nombre: '',
+        dni: '',
+        tarjeta: '',
+        aceptaTerminos: false
+    });
 
-    const [nombre, setNombre] = useState("");
-    const [dni, setDni] = useState("");
-    const [tarjeta, setTarjeta] = useState("");
-    const [aceptaTerminos, setAceptaTerminos] = useState(false);
+    const [errors, setErrors] = useState({});
 
+    function handleChange(e) {
+        const { name, value, type, checked } = e.target;
+        setFormData({
+            ...formData,
+            [name]: type === 'checkbox' ? checked : value,
+        });
+    }
+
+    function validateForm() {
+        const newErrors = {};
+        const soloNumeros = /^\d+$/;
+        if (formData.nombre.trim() === "") {
+            newErrors.nombre = "El campo nombre está vacío";
+        }
+        if (formData.dni.trim() === "") {
+            newErrors.dni = "El campo dni está vacío";
+        } else if (!soloNumeros.test(formData.dni)) {
+            newErrors.dni = 'No se admiten letras ni caracteres en el DNI';
+        }
+
+        if (formData.tarjeta.trim() === "") {
+            newErrors.tarjeta = "No Ingresaste ninguna tarjeta";
+        } else if (!soloNumeros.test(formData.tarjeta)) {
+            newErrors.tarjeta = 'No se admiten letras ni caracteres en la tarjeta';
+        } 
+        
+        if (!formData.aceptaTerminos) {
+            newErrors.aceptaTerminos = "Debes aceptar los terminos y condiciones";
+        }
+        return newErrors;
+    }
+    
     const totalDinero = carrito.reduce(
         (acc, producto) => acc + producto.price * producto.cantidad,
         0
@@ -18,16 +54,15 @@ function FormularioCompra({ carrito, eliminarProducto, vaciarCarrito }) {
 
     const finalizarCompra = (e) => {
         e.preventDefault();
-        if (!nombre.trim() || !dni.trim() || !tarjeta.trim()) {
-            alert("Por favor, complete todos los campos obligatorios.");
-            return;
-        }
-        if (!aceptaTerminos) {
-            alert("Debe aceptar los términos y condiciones.");
-            return;
-        }
-        setMostrarModal(true);
-        vaciarCarrito();
+        const newErrors = validateForm();
+        setErrors(newErrors);
+
+        if (Object.keys(newErrors).length === 0) {
+            setMostrarModal(true);
+            vaciarCarrito();
+        } else {
+            setMostrarModal(false);
+        }        
     };
 
     return (
@@ -39,44 +74,68 @@ function FormularioCompra({ carrito, eliminarProducto, vaciarCarrito }) {
                 <Col lg={6}>
                     <Card className="shadow-sm border-0 p-4">
                         <h4 className="fw-bold mb-3">Datos de facturación</h4>
-                        <Form onSubmit={finalizarCompra}>
+                        <Form onSubmit={finalizarCompra} noValidate>
                             <Form.Group className="mb-3" controlId="formBasicName">
                                 <Form.Label>Nombre del titular</Form.Label>
                                 <Form.Control
                                     type="text"
+                                    name="nombre"
                                     placeholder="Indique su nombre completo"
-                                    value={nombre}
-                                    onChange={(e) => setNombre(e.target.value)}
+                                    className={`form-control ${errors.nombre ? "is-invalid" : ""
+                                        }`} 
+                                    value={formData.nombre}
+                                    onChange={handleChange}
                                 />
+                                {errors.nombre && (
+                                    <div className="invalid-feedback">{errors.nombre}</div>
+                                )}
                             </Form.Group>
 
                             <Form.Group className="mb-3" controlId="formBasicDni">
                                 <Form.Label>DNI</Form.Label>
                                 <Form.Control 
-                                    type="text" 
+                                    type="text"
+                                    name="dni" 
                                     placeholder="Indique su DNI acá" 
-                                    value={dni} 
-                                    onChange={(e) => setDni(e.target.value)}
+                                    className={`form-control ${errors.dni ? "is-invalid" : ""
+                                        }`} 
+                                    value={formData.dni} 
+                                    onChange={handleChange}
                                 />
+                                {errors.dni && (
+                                    <div className="invalid-feedback">{errors.dni}</div>
+                                )}
                             </Form.Group>
 
                             <Form.Group className="mb-3" controlId="formBasicCard">
                                 <Form.Label>Número de tarjeta</Form.Label>
                                 <Form.Control
                                     type="text"
+                                    name="tarjeta"
                                     placeholder="XXXX XXXX XXXX XXXX"
-                                    value={tarjeta}
-                                    onChange={(e) => setTarjeta(e.target.value)}
+                                    className={`form-control ${errors.tarjeta ? "is-invalid" : ""
+                                        }`}
+                                    value={formData.tarjeta}
+                                    onChange={handleChange}
                                 />
+                                {errors.tarjeta && (
+                                    <div className="invalid-feedback">{errors.tarjeta}</div>
+                                )}
                             </Form.Group>
 
                             <Form.Group className="mb-4" controlId="formBasicCheckbox">
                                 <Form.Check 
-                                    type="checkbox" 
+                                    type="checkbox"
+                                    name="aceptaTerminos" 
                                     label="Aceptar los términos y condiciones" 
-                                    checked={aceptaTerminos}
-                                    onChange={(e) => setAceptaTerminos(e.target.checked)}
+                                    className={`form-control ${errors.aceptaTerminos ? "is-invalid" : ""
+                                        }`}
+                                    checked={formData.aceptaTerminos}
+                                    onChange={handleChange}
                                 />
+                                {errors.aceptaTerminos && (
+                                    <div className="invalid-feedback">{errors.aceptaTerminos}</div>
+                                )}
                             </Form.Group>
 
                             <Button 
@@ -155,7 +214,7 @@ function FormularioCompra({ carrito, eliminarProducto, vaciarCarrito }) {
 
                 <Modal.Body className="text-center py-4">
                     <i className="bi bi-check-circle-fill text-success display-3 mb-3"></i>
-                    <p className="mb-1 fw-bold fs-5">¡Gracias por tu compra, {nombre}!</p>
+                    <p className="mb-1 fw-bold fs-5">¡Gracias por tu compra, {formData.nombre}!</p>
                     <p className="text-muted mb-0">
                         Tu pedido fue procesado correctamente y en breve nos pondremos en contacto.
                     </p>
