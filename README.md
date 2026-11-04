@@ -43,7 +43,7 @@ La aplicación permite explorar el catálogo de productos de forma dinámica, ve
 ### 1. Clonar el repositorio
 
 ```bash
-git clone URL_DEL_REPOSITORIO
+git clone https://github.com/LeanMoreno/proyecto-interfaces-grupo-9.git
 cd proyecto-interfaces-grupo-9
 ```
 
@@ -51,6 +51,18 @@ cd proyecto-interfaces-grupo-9
 
 ```bash
 npm install
+```
+
+### 3. Correr proyecto
+
+```bash
+npm run dev
+```
+
+### 4. Deploy proyecto
+
+```bash
+https://leanmoreno.github.io/proyecto-interfaces-grupo-9/
 ```
 
 ## Autores del proyecto
