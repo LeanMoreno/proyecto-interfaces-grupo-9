@@ -34,7 +34,7 @@ function CarritoItem({ producto, eliminarProducto, aumentarCantidad, disminuirCa
             </div>
 
             <div className="flex-grow-1 overflow-hidden">
-              <h6 className="fw-bold mb-1 text-truncate" title={title}>
+              <h6 className="fw-bold mb-1 text-truncate" style={{width:"22vw"}} title={title}>
                 {title}
               </h6>
               <p className="text-muted small mb-0">
