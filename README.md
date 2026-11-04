@@ -71,4 +71,4 @@ https://leanmoreno.github.io/proyecto-interfaces-grupo-9/
 - Leandro Joaquin Moreno
 - Fabian Ricardo Blanco
 - Camila Paredes
-- Pedro Corvetta
+- Pedro Covetta
