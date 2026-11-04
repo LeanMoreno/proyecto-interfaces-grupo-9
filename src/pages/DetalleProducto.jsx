@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Container, Row, Col, Button, Badge, Spinner, Alert } from "react-bootstrap";
+import { completarProducto } from "../data/completarProducto";
 
 function DetalleProducto({ agregarAlCarrito, carrito }) {
   const { id } = useParams();
@@ -17,7 +18,7 @@ function DetalleProducto({ agregarAlCarrito, carrito }) {
         return res.json();
       })
       .then((data) => {
-        setProducto(data);
+        setProducto(completarProducto(data));
         setCargando(false);
       })
       .catch((err) => {
@@ -62,7 +63,7 @@ function DetalleProducto({ agregarAlCarrito, carrito }) {
       <Row className="g-5 align-items-center">
         {/* Imagen del Producto */}
         <Col md={6} className="text-center">
-          <div 
+          <div
             className="p-4 bg-white rounded shadow-sm border d-flex align-items-center justify-content-center"
             style={{ minHeight: "350px" }}
           >
@@ -90,7 +91,15 @@ function DetalleProducto({ agregarAlCarrito, carrito }) {
           <p className="text-muted mb-4 lead" style={{ fontSize: "1rem" }}>
             {producto.description}
           </p>
-
+          <h5 className="fw-bold">Características</h5>
+          <ul className="list-unstyled mb-4">
+            {producto.caracteristicas.map((caracteristica, index) => (
+              <li key={index}>
+                <i className="bi bi-check-circle-fill text-success me-2"></i>
+                {caracteristica}
+              </li>
+            ))}
+          </ul>
           <div className="mb-4">
             <span className="text-muted small d-block mb-1">
               Stock disponible: <strong>{stock} unidades</strong>

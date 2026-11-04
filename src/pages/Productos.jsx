@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Container, Row, Col, Button, Spinner, Alert } from 'react-bootstrap';
 import ProductoCard from '../components/ProductoCard';
+import { completarProducto } from '../data/completarProducto';
 
 function Productos({ agregarAlCarrito, carrito }) {
   const [productos, setProductos] = useState([]);
@@ -18,8 +19,9 @@ function Productos({ agregarAlCarrito, carrito }) {
         return res.json();
       })
       .then((data) => {
-        setProductos(data);
-        setListaProductos(data);
+        const productosCompletos = data.map(completarProducto);
+        setProductos(productosCompletos);
+        setListaProductos(productosCompletos);
         setCargando(false);
       })
       .catch((err) => {
